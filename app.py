@@ -10,6 +10,19 @@ app = Flask(__name__)
 app.secret_key = "sgrdms_secret_key_2026"
 
 DB_PATH = os.path.join("database", "sgrdms.db")
+# Auto-initialisation de la base au démarrage
+if not os.path.exists(DB_PATH):
+    os.makedirs("database", exist_ok=True)
+    conn = sqlite3.connect(DB_PATH)
+    with open("schema.sql", "r", encoding="utf-8") as f:
+        conn.executescript(f.read())
+    # Données de base — utilisateurs
+    import hashlib
+    def hp(p): return hashlib.sha256(p.encode()).hexdigest()
+    conn.execute("INSERT OR IGNORE INTO UTILISATEUR (login, mot_de_passe, role, nom_complet, actif) VALUES (?,?,?,?,1)", ("admin", hp("admin123"), "admin", "Administrateur Système"))
+    conn.execute("INSERT OR IGNORE INTO UTILISATEUR (login, mot_de_passe, role, nom_complet, actif) VALUES (?,?,?,?,1)", ("accueil", hp("accueil123"), "accueil", "Secrétaire Accueil"))
+    conn.commit()
+    conn.close()
 
 # ============================================================
 # UTILITAIRES
