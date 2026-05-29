@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block title %}Facturation{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="fas fa-file-invoice-dollar me-2 text-primary"></i>Facturation</h2>
+        <p>{{ factures|length }} facture(s) émise(s)</p>
+    </div>
+    {% if session.role in ['admin', 'accueil'] %}
+    <a href="{{ url_for('facture_nouvelle') }}" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> Nouvelle facture
+    </a>
+    {% endif %}
+</div>
+
+<!-- STATS RAPIDES -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-info">
+                <h3>{{ total_paye | int }} F</h3>
+                <p>Total encaissé</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
+            <div class="stat-info">
+                <h3>{{ factures|length }}</h3>
+                <p>Factures émises</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon blue"><i class="fas fa-file-invoice"></i></div>
+            <div class="stat-info">
+                <h3>{{ total_montant | int }} F</h3>
+                <p>Montant total</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- LISTE -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-list me-2 text-primary"></i>Liste des factures
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>N° Facture</th>
+                        <th>Patient</th>
+                        <th>Date</th>
+                        <th>Montant total</th>
+                        <th>Mode paiement</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for f in factures %}
+                    <tr>
+                        <td>
+                            <span class="badge bg-primary">{{ f.num_facture }}</span>
+                        </td>
+                        <td>
+                            <i class="fas fa-user me-1 text-muted"></i>
+                            <strong>{{ f.patient }}</strong>
+                        </td>
+                        <td>{{ f.date_facturation }}</td>
+                        <td>
+                            <strong class="text-success">{{ f.montant_total | int }} FCFA</strong>
+                        </td>
+                        <td>
+                            {% if f.mode_paiement == 'especes' %}
+                                <span class="badge bg-success">💵 Espèces</span>
+                            {% elif f.mode_paiement == 'carte' %}
+                                <span class="badge bg-primary">💳 Carte</span>
+                            {% elif f.mode_paiement == 'assurance' %}
+                                <span class="badge bg-info">🏥 Assurance</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ f.mode_paiement or '—' }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if f.statut_paiement == 'paye' %}
+                                <span class="badge bg-success">✅ Payé</span>
+                            {% elif f.statut_paiement == 'en_attente' %}
+                                <span class="badge bg-warning text-dark">⏳ En attente</span>
+                            {% else %}
+                                <span class="badge bg-danger">❌ Échec</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('facture_detail', id=f.id_facture) }}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-5">
+                            <i class="fas fa-file-invoice fa-3x mb-3 d-block text-light"></i>
+                            Aucune facture enregistrée
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="fas fa-bell me-2 text-primary"></i>Notifications</h2>
+        <p>{{ notifs|length }} notification(s)</p>
+    </div>
+    {% if notifs %}
+    <a href="{{ url_for('notifications_lire_tout') }}" class="btn btn-outline-primary">
+        <i class="fas fa-check-double me-1"></i> Tout marquer comme lu
+    </a>
+    {% endif %}
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        {% for n in notifs %}
+        <div class="card mb-3 notif-card {% if not n.lu %}notif-unread{% endif %}">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-start gap-3">
+                    <div class="notif-icon {% if not n.lu %}bg-primary{% else %}bg-light{% endif %}">
+                        <i class="fas fa-bell {% if not n.lu %}text-white{% else %}text-muted{% endif %}"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <p class="mb-1 {% if not n.lu %}fw-600{% endif %}">{{ n.contenu }}</p>
+                        <small class="text-muted">
+                            <i class="fas fa-user me-1"></i>{{ n.patient }}
+                        </small>
+                    </div>
+                    <div class="d-flex flex-column align-items-end gap-1">
+                        {% if not n.lu %}
+                        <span class="badge bg-primary">Nouveau</span>
+                        <a href="{{ url_for('notification_lire', id=n.id_notification) }}"
+                           class="btn btn-sm btn-outline-secondary">
+                            <i class="fas fa-check"></i> Lu
+                        </a>
+                        {% else %}
+                        <span class="badge bg-light text-muted">Lu</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card">
+            <div class="card-body text-center text-muted py-5">
+                <i class="fas fa-bell-slash fa-3x mb-3 d-block text-light"></i>
+                <h5>Aucune notification</h5>
+                <p>Tout est à jour !</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.notif-card { border: 2px solid #e2e8f0; transition: all 0.2s; }
+.notif-unread { border-color: #0d6efd; background: #f0f7ff; }
+.notif-icon {
+    width: 42px; height: 42px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+}
+.fw-600 { font-weight: 600; }
+</style>
+{% endblock %}

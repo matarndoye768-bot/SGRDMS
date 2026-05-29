@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Ordonnances{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="fas fa-file-medical me-2 text-success"></i>Ordonnances</h2>
+        <p>{{ ordonnances|length }} ordonnance(s) émise(s)</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-list me-2 text-success"></i>Liste des ordonnances
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Patient</th>
+                        <th>Médecin</th>
+                        <th>Date</th>
+                        <th>Statut</th>
+                        <th>Médicaments</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for o in ordonnances %}
+                    <tr>
+                        <td><span class="badge bg-light text-dark">{{ o.id_ordonnance }}</span></td>
+                        <td>
+                            <i class="fas fa-user me-1 text-muted"></i>
+                            <strong>{{ o.patient }}</strong>
+                        </td>
+                        <td>
+                            <i class="fas fa-user-md me-1 text-muted"></i>
+                            {{ o.medecin }}
+                        </td>
+                        <td>{{ o.date }}</td>
+                        <td>
+                            {% if o.statut == 'active' %}
+                                <span class="badge bg-success">✅ Active</span>
+                            {% elif o.statut == 'expiree' %}
+                                <span class="badge bg-warning text-dark">⏳ Expirée</span>
+                            {% else %}
+                                <span class="badge bg-danger">❌ Annulée</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-info">{{ o.nb_medicaments }} médicament(s)</span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('consultation_detail', id=o.id_consultation) }}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye"></i> Voir
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-5">
+                            <i class="fas fa-file-medical fa-3x mb-3 d-block text-light"></i>
+                            Aucune ordonnance enregistrée
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

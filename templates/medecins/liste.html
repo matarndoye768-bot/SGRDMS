@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Médecins{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="fas fa-user-md me-2 text-primary"></i>Médecins</h2>
+        <p>{{ medecins|length }} médecin(s) enregistré(s)</p>
+    </div>
+    {% if session.role == 'admin' %}
+    <a href="{{ url_for('medecin_nouveau') }}" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> Nouveau médecin
+    </a>
+    {% endif %}
+</div>
+
+<div class="row g-4">
+    {% for m in medecins %}
+    <div class="col-xl-4 col-md-6">
+        <div class="card medecin-card h-100">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="avatar-md">
+                        {{ m.prenom[0] }}{{ m.nom[0] }}
+                    </div>
+                    <div>
+                        <h6 class="fw-700 mb-0">{{ m.prenom }} {{ m.nom }}</h6>
+                        <span class="text-muted small">{{ m.specialite }}</span>
+                    </div>
+                    {% if m.telecons_active %}
+                    <span class="badge bg-success ms-auto">
+                        <i class="fas fa-video me-1"></i>Télé
+                    </span>
+                    {% endif %}
+                </div>
+
+                <ul class="info-list-sm">
+                    <li>
+                        <i class="fas fa-hospital text-primary"></i>
+                        <span>{{ m.nom_service }}</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-envelope text-success"></i>
+                        <span>{{ m.email or '—' }}</span>
+                    </li>
+                    <li>
+                        <i class="fas fa-phone text-warning"></i>
+                        <span>{{ m.telephone or '—' }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center text-muted py-5">
+                <i class="fas fa-user-md fa-3x mb-3 d-block text-light"></i>
+                Aucun médecin enregistré
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+.medecin-card { border: 2px solid transparent; transition: all 0.2s; }
+.medecin-card:hover { border-color: #0d6efd; transform: translateY(-3px); }
+.avatar-md {
+    width: 50px; height: 50px;
+    background: linear-gradient(135deg, #0d6efd, #198754);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 0.9rem;
+    flex-shrink: 0;
+}
+.info-list-sm { list-style: none; padding: 0; margin: 0; }
+.info-list-sm li {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 0; font-size: 0.88rem; color: #475569;
+    border-bottom: 1px solid #f1f5f9;
+}
+.info-list-sm li:last-child { border-bottom: none; }
+.info-list-sm li i { width: 16px; text-align: center; }
+.fw-700 { font-weight: 700; }
+</style>
+{% endblock %}

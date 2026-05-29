@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% block title %}Rendez-vous{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="fas fa-calendar-check me-2 text-primary"></i>Rendez-vous</h2>
+        <p>{{ rdvs|length }} rendez-vous au total</p>
+    </div>
+    <a href="{{ url_for('rdv_nouveau') }}" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> Nouveau RDV
+    </a>
+</div>
+
+<!-- FILTRES -->
+<div class="card mb-4">
+    <div class="card-body py-3">
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{{ url_for('rdv_liste') }}"
+               class="btn btn-sm {% if not request.args.get('statut') %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                Tous
+            </a>
+            <a href="{{ url_for('rdv_liste', statut='en_attente') }}"
+               class="btn btn-sm {% if request.args.get('statut') == 'en_attente' %}btn-warning{% else %}btn-outline-warning{% endif %}">
+                En attente
+            </a>
+            <a href="{{ url_for('rdv_liste', statut='confirme') }}"
+               class="btn btn-sm {% if request.args.get('statut') == 'confirme' %}btn-success{% else %}btn-outline-success{% endif %}">
+                Confirmés
+            </a>
+            <a href="{{ url_for('rdv_liste', statut='termine') }}"
+               class="btn btn-sm {% if request.args.get('statut') == 'termine' %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                Terminés
+            </a>
+            <a href="{{ url_for('rdv_liste', statut='annule') }}"
+               class="btn btn-sm {% if request.args.get('statut') == 'annule' %}btn-danger{% else %}btn-outline-danger{% endif %}">
+                Annulés
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- LISTE -->
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-list me-2 text-primary"></i>Liste des rendez-vous
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Patient</th>
+                        <th>Médecin</th>
+                        <th>Date & Heure</th>
+                        <th>Motif</th>
+                        <th>Type</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for rdv in rdvs %}
+                    <tr>
+                        <td><span class="badge bg-light text-dark">{{ rdv.id_rdv }}</span></td>
+                        <td>
+                            <i class="fas fa-user me-1 text-muted"></i>
+                            <strong>{{ rdv.patient }}</strong>
+                        </td>
+                        <td>
+                            <i class="fas fa-user-md me-1 text-muted"></i>
+                            {{ rdv.medecin }}
+                        </td>
+                        <td>
+                            <i class="fas fa-clock me-1 text-muted"></i>
+                            {{ rdv.date_heure }}
+                        </td>
+                        <td>{{ rdv.motif or '—' }}</td>
+                        <td>
+                            {% if rdv.type == 'teleconsultation' %}
+                                <span class="badge bg-info">📹 Téléconsultation</span>
+                            {% else %}
+                                <span class="badge bg-secondary">🏥 Présentiel</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if rdv.statut == 'confirme' %}
+                                <span class="badge bg-success">Confirmé</span>
+                            {% elif rdv.statut == 'en_attente' %}
+                                <span class="badge bg-warning text-dark">En attente</span>
+                            {% elif rdv.statut == 'annule' %}
+                                <span class="badge bg-danger">Annulé</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Terminé</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                {% if rdv.statut == 'en_attente' %}
+                                <a href="{{ url_for('rdv_confirmer', id=rdv.id_rdv) }}"
+                                   class="btn btn-sm btn-outline-success" title="Confirmer">
+                                    <i class="fas fa-check"></i>
+                                </a>
+                                <a href="{{ url_for('rdv_annuler', id=rdv.id_rdv) }}"
+                                   class="btn btn-sm btn-outline-danger" title="Annuler"
+                                   onclick="return confirm('Annuler ce RDV ?')">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                                {% endif %}
+                                {% if rdv.statut == 'confirme' and session.role in ['admin','medecin'] %}
+                                <a href="{{ url_for('rdv_terminer', id=rdv.id_rdv) }}"
+                                   class="btn btn-sm btn-outline-secondary" title="Marquer terminé">
+                                    <i class="fas fa-flag-checkered"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-5">
+                            <i class="fas fa-calendar-times fa-3x mb-3 d-block text-light"></i>
+                            Aucun rendez-vous trouvé
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

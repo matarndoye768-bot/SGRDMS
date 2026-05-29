@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Dossier médical — {{ patient.prenom }} {{ patient.nom }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="fas fa-folder-open me-2 text-success"></i>Dossier médical</h2>
+        <p>{{ patient.prenom }} {{ patient.nom }}</p>
+    </div>
+    <a href="{{ url_for('patient_detail', id=patient.id_patient) }}"
+       class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Retour
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-notes-medical me-2 text-success"></i>
+                Informations médicales de {{ patient.prenom }} {{ patient.nom }}
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="row g-3">
+
+                        <div class="col-md-6">
+                            <label class="form-label">Groupe sanguin</label>
+                            <select name="groupe_sanguin" class="form-select">
+                                <option value="">-- Choisir --</option>
+                                {% for g in ['A+','A-','B+','B-','AB+','AB-','O+','O-'] %}
+                                <option value="{{ g }}"
+                                    {% if dossier.groupe_sanguin == g %}selected{% endif %}>
+                                    {{ g }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Statut du dossier</label>
+                            <select name="status" class="form-select">
+                                <option value="actif"   {% if dossier.status == 'actif'   %}selected{% endif %}>Actif</option>
+                                <option value="inactif" {% if dossier.status == 'inactif' %}selected{% endif %}>Inactif</option>
+                                <option value="archive" {% if dossier.status == 'archive' %}selected{% endif %}>Archivé</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Maladie(s) principale(s)</label>
+                            <input type="text" name="maladie" class="form-control"
+                                   placeholder="Ex: Diabète, Hypertension..."
+                                   value="{{ dossier.maladie or '' }}">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Allergies connues</label>
+                            <input type="text" name="allergies" class="form-control"
+                                   placeholder="Ex: Pénicilline, Arachides, Lactose..."
+                                   value="{{ dossier.allergies or '' }}">
+                        </div>
+
+                        <div class="col-12 d-flex gap-2 justify-content-end mt-2">
+                            <a href="{{ url_for('patient_detail', id=patient.id_patient) }}"
+                               class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-1"></i> Enregistrer le dossier
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="alert alert-info mt-3">
+            <i class="fas fa-info-circle me-2"></i>
+            Ces informations seront visibles par tous les médecins lors des consultations.
+        </div>
+    </div>
+</div>
+{% endblock %}

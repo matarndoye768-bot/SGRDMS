@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Nouveau Service{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="fas fa-hospital me-2 text-primary"></i>Nouveau Service</h2>
+        <p>Créer un nouveau service dans le centre de santé</p>
+    </div>
+    <a href="{{ url_for('services_liste') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Retour
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-plus-circle me-2 text-success"></i>Informations du service
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="row g-3">
+
+                        <div class="col-12">
+                            <label class="form-label">Nom du service <span class="text-danger">*</span></label>
+                            <input type="text" name="nom_service" class="form-control"
+                                   placeholder="Ex: Cardiologie" required>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Localisation</label>
+                            <input type="text" name="localisation" class="form-control"
+                                   placeholder="Ex: Bâtiment A - 2ème étage">
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control" rows="3"
+                                      placeholder="Description du service..."></textarea>
+                        </div>
+
+                        <div class="col-12 d-flex gap-2 justify-content-end mt-2">
+                            <a href="{{ url_for('services_liste') }}"
+                               class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-1"></i> Créer le service
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

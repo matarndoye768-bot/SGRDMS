@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Consultations{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="fas fa-stethoscope me-2 text-primary"></i>Consultations</h2>
+        <p>{{ consultations|length }} consultation(s) enregistrée(s)</p>
+    </div>
+    {% if session.role in ['admin', 'medecin'] %}
+    <a href="{{ url_for('consultation_nouvelle') }}" class="btn btn-primary">
+        <i class="fas fa-plus me-1"></i> Nouvelle consultation
+    </a>
+    {% endif %}
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <i class="fas fa-list me-2 text-primary"></i>Liste des consultations
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Patient</th>
+                        <th>Médecin</th>
+                        <th>Date</th>
+                        <th>Diagnostic</th>
+                        <th>Poids</th>
+                        <th>Temp.</th>
+                        <th>Tension</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in consultations %}
+                    <tr>
+                        <td><span class="badge bg-light text-dark">{{ c.id_consultation }}</span></td>
+                        <td>
+                            <i class="fas fa-user me-1 text-muted"></i>
+                            <strong>{{ c.patient }}</strong>
+                        </td>
+                        <td>
+                            <i class="fas fa-user-md me-1 text-muted"></i>
+                            {{ c.medecin }}
+                        </td>
+                        <td>{{ c.date_consultation }}</td>
+                        <td>{{ c.diagnostic or '—' }}</td>
+                        <td>
+                            {% if c.poids %}
+                                <span class="badge bg-light text-dark">{{ c.poids }} kg</span>
+                            {% else %}—{% endif %}
+                        </td>
+                        <td>
+                            {% if c.temperature %}
+                                <span class="badge {% if c.temperature > 38 %}bg-danger{% else %}bg-success{% endif %}">
+                                    {{ c.temperature }}°C
+                                </span>
+                            {% else %}—{% endif %}
+                        </td>
+                        <td>{{ c.tension or '—' }}</td>
+                        <td>
+                            <a href="{{ url_for('consultation_detail', id=c.id_consultation) }}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="9" class="text-center text-muted py-5">
+                            <i class="fas fa-stethoscope fa-3x mb-3 d-block text-light"></i>
+                            Aucune consultation enregistrée
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

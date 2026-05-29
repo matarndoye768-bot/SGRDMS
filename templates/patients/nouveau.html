@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Nouveau Patient{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="fas fa-user-plus me-2 text-primary"></i>Nouveau Patient</h2>
+        <p>Enregistrer un nouveau patient dans le système</p>
+    </div>
+    <a href="{{ url_for('patients_liste') }}" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Retour
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-id-card me-2 text-primary"></i>Informations du patient
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+
+                    <div class="row g-3">
+                        <!-- Prénom -->
+                        <div class="col-md-6">
+                            <label class="form-label">Prénom <span class="text-danger">*</span></label>
+                            <input type="text" name="prenom" class="form-control"
+                                   placeholder="Ex: Amadou" required>
+                        </div>
+
+                        <!-- Nom -->
+                        <div class="col-md-6">
+                            <label class="form-label">Nom <span class="text-danger">*</span></label>
+                            <input type="text" name="nom" class="form-control"
+                                   placeholder="Ex: Diallo" required>
+                        </div>
+
+                        <!-- Date de naissance -->
+                        <div class="col-md-6">
+                            <label class="form-label">Date de naissance <span class="text-danger">*</span></label>
+                            <input type="date" name="date_naissance" class="form-control" required>
+                        </div>
+
+                        <!-- Sexe -->
+                        <div class="col-md-6">
+                            <label class="form-label">Sexe <span class="text-danger">*</span></label>
+                            <select name="sexe" class="form-select" required>
+                                <option value="">-- Choisir --</option>
+                                <option value="M">♂ Masculin</option>
+                                <option value="F">♀ Féminin</option>
+                            </select>
+                        </div>
+
+                        <!-- Téléphone -->
+                        <div class="col-md-6">
+                            <label class="form-label">Téléphone</label>
+                            <input type="text" name="telephone" class="form-control"
+                                   placeholder="Ex: 77 123 45 67">
+                        </div>
+
+                        <!-- Adresse -->
+                        <div class="col-md-6">
+                            <label class="form-label">Adresse</label>
+                            <input type="text" name="adresse" class="form-control"
+                                   placeholder="Ex: Thiès - Médina">
+                        </div>
+
+                        <!-- Boutons -->
+                        <div class="col-12 d-flex gap-2 justify-content-end mt-2">
+                            <a href="{{ url_for('patients_liste') }}" 
+                               class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i> Enregistrer le patient
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="alert alert-info mt-3">
+            <i class="fas fa-info-circle me-2"></i>
+            Un dossier médical vide sera automatiquement créé pour ce patient.
+        </div>
+    </div>
+</div>
+{% endblock %}
